@@ -9,15 +9,8 @@ const {
 
 const Route = Router()
 
-Route
-  .route('/')
-  .get(getAllUsers)
-  .post(createUser)
+Route.route('/').get(getAllUsers).post(createUser)
 
-Route
-  .route('/:id')
-  .get(getUser)
-  .patch(updateUser)
-  .delete(deleteUser)
+Route.route('/:id').get(getUser).patch(updateUser).delete(deleteUser)
 
 module.exports = Route

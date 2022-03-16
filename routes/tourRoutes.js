@@ -2,7 +2,7 @@ const { Router } = require('express')
 const {
   getAllTours,
   createTour,
-  getTour,
+  getTour
 } = require('../controllers/tourControllers')
 
 const router = Router()

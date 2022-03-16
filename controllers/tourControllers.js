@@ -3,27 +3,39 @@ const Tour = require('../models/tourModel')
 exports.getAllTours = async (req, res) => {
   try {
     const tours = await Tour.find()
-
     res.status(200).json({
       status: 'success',
-      data: tours,
+      results: tours.length,
+      data: {
+        tours
+      }
     })
   } catch (err) {
     res.status(404).json({
       status: 'fail',
-      data: err,
+      data: err
     })
   }
 }
 
 exports.getTour = async (req, res) => {
-  const tour = Tour.findById(req.params.id)
-
-  res.status(200)
-  res.json({
-    status: 'success',
-    data: tour,
-  })
+  try {
+    const tour = Tour.findById(req.params.id)
+    res.status(200)
+    res.json({
+      status: 'success',
+      data: {
+        tour
+      }
+    })
+  } catch (err) {
+    res.status(200).json({
+      status: 'success',
+      data: {
+        message: err
+      }
+    })
+  }
 }
 
 exports.createTour = async (req, res) => {
@@ -32,13 +44,13 @@ exports.createTour = async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: {
-        tour: newTour,
-      },
+        tour: newTour
+      }
     })
   } catch (err) {
     res.status(400).json({
       status: 'fail',
-      message: 'Invalid data sent!',
+      message: 'Invalid data sent!'
     })
   }
 }
