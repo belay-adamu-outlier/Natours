@@ -18,8 +18,12 @@ mongoose
     useFindAndModify: false,
     useUnifiedTopology: true
   })
-  .then(() => console.log('Connection to DB successful!'))
+  .then(() => {
+    // eslint-disable-next-line no-console
+    console.log('Connection to DB successful!')
+  })
 
 app.listen(port, () => {
+  // eslint-disable-next-line no-console
   console.log(`listening on ${port}...`)
 })
