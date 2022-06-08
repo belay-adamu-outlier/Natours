@@ -12,17 +12,29 @@ exports.getAllTours = async (req, res) => {
 
     excludedFields.forEach((el) => delete queryObj[el])
 
-    // advanced query
+    // Advanced query
+
     let queryString = JSON.stringify(queryObj)
     queryString = queryString.replace(
       /\b(gte|gt|lte|lt)\b/g,
       (match) => `$${match}`
     )
-    // eslint-disable-next-line no-console
-    console.log(queryString)
 
     queryObj = JSON.parse(queryString)
-    const query = Tour.find(queryObj)
+    let query = Tour.find(queryObj)
+
+    // Sorting
+
+    if (req.query.sort) {
+      // mongoose uses field names(strings) for sorting
+      // you can use multiple field names separated by a space to sort a query.
+      // if there are ties in the sort order, mongoose will use the additional field names to further sort the query.
+      const sortBy = req.query.sort.split(',').join(' ')
+      query = query.sort(sortBy)
+    } else {
+      query = query.sort('-createdAt')
+    }
+
     // Execute query
 
     const tours = await query
