@@ -35,6 +35,16 @@ exports.getAllTours = async (req, res) => {
       query = query.sort('-createdAt')
     }
 
+    // Fields selecting
+
+    if (req.query.fields) {
+      const fields = req.query.fields.split(',').join(' ')
+      query = query.select(fields)
+    } else {
+      // the minus sign tells mongoose to exclude the field
+      query = query.select('-__v')
+    }
+
     // Execute query
 
     const tours = await query
