@@ -45,11 +45,22 @@ exports.getAllTours = async (req, res) => {
     // if the fields parameter is specified, mongoose will only return the fields specified in the fields parameter.
 
     if (req.query.fields) {
-      const fields = req.query.fields.split(',').join(' ')
+      const fields = req.query.fields.split(',').concat('-__v').join(' ')
       query = query.select(fields)
     } else {
       // the minus sign tells mongoose to exclude the field
       query = query.select('-__v')
+    }
+
+    // Pagination
+
+    const { page = 1, limit = 10 } = req.query
+    const skipped = (page - 1) * limit
+    query = query.skip(skipped).limit(parseInt(limit, 10))
+
+    if (req.query.page) {
+      const numTours = await Tour.countDocuments()
+      if (numTours <= skipped) throw new Error('This page does not exist')
     }
 
     // Execute query
