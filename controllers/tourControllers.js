@@ -34,6 +34,7 @@ exports.getAllTours = async (req, res) => {
       // mongoose uses field names(strings) for sorting
       // you can use multiple field names separated by a space to sort a query.
       // if there are ties in the sort order, mongoose will use the additional field names to further sort the query.
+      // minus sign before the field name indicates descending order
       const sortBy = req.query.sort.split(',').join(' ')
       query = query.sort(sortBy)
     } else {
