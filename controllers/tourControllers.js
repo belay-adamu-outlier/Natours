@@ -14,6 +14,11 @@ exports.getAllTours = async (req, res) => {
 
     // Advanced query
 
+    // queryStrings with greater than or less than etc... operators are written as
+    // price[gte]=1000, price[lte]=2000 (/?price[gte]=1000&price[lte]=2000)
+    // when accessed from query object they come in the form => price: { gte: 1000, lte: 2000 }
+    // we need to convert the keys to $gte and $lte etc... for mongo to reconize them as operators
+
     let queryString = JSON.stringify(queryObj)
     queryString = queryString.replace(
       /\b(gte|gt|lte|lt)\b/g,
