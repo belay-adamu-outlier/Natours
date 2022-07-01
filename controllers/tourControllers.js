@@ -1,5 +1,12 @@
 const Tour = require('../models/tourModel')
 
+exports.getTop5BestTours = async (req, res, next) => {
+  req.query.limit = '5'
+  req.query.sort = '-ratingsAverage,price'
+  req.query.fields = 'name,price,ratingsAverage,summary,difficulty'
+  next()
+}
+
 exports.getAllTours = async (req, res) => {
   try {
     // eslint-disable-next-line no-console
@@ -46,7 +53,7 @@ exports.getAllTours = async (req, res) => {
     // if the fields parameter is specified, mongoose will only return the fields specified in the fields parameter.
 
     if (req.query.fields) {
-      const fields = req.query.fields.split(',').concat('-__v').join(' ')
+      const fields = req.query.fields.split(',').join(' ')
       query = query.select(fields)
     } else {
       // the minus sign tells mongoose to exclude the field

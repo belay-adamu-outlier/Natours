@@ -1,5 +1,6 @@
 const { Router } = require('express')
 const {
+  getTop5BestTours,
   getAllTours,
   createTour,
   getTour,
@@ -10,7 +11,7 @@ const {
 const router = Router()
 
 // router.param('id', checkId)
-
+router.route('/top-5-best').get(getTop5BestTours, getAllTours)
 router.route('/').get(getAllTours).post(createTour)
 
 router.route('/:id').get(getTour).patch(updateTour).delete(deleteTour)
