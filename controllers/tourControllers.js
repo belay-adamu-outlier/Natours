@@ -42,6 +42,8 @@ exports.getAllTours = async (req, res) => {
 
     // Fields selecting
 
+    // if the fields parameter is specified, mongoose will only return the fields specified in the fields parameter.
+
     if (req.query.fields) {
       const fields = req.query.fields.split(',').join(' ')
       query = query.select(fields)
