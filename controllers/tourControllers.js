@@ -1,4 +1,5 @@
 const Tour = require('../models/tourModel')
+const { ApiFeatures } = require('../utils/apiFeatures')
 
 exports.getTop5BestTours = async (req, res, next) => {
   req.query.limit = '5'
@@ -12,68 +13,15 @@ exports.getAllTours = async (req, res) => {
     // eslint-disable-next-line no-console
     console.log(req.query)
 
-    // Build query
-
-    let queryObj = { ...req.query }
-    const excludedFields = ['page', 'sort', 'limit', 'fields']
-
-    excludedFields.forEach((el) => delete queryObj[el])
-
-    // Advanced query
-
-    // queryStrings with greater than or less than etc... operators are written as
-    // price[gte]=1000, price[lte]=2000 (/?price[gte]=1000&price[lte]=2000)
-    // when accessed from query object they come in the form => price: { gte: 1000, lte: 2000 }
-    // we need to convert the keys to $gte and $lte etc... for mongo to reconize them as operators
-
-    let queryString = JSON.stringify(queryObj)
-    queryString = queryString.replace(
-      /\b(gte|gt|lte|lt)\b/g,
-      (match) => `$${match}`
-    )
-
-    queryObj = JSON.parse(queryString)
-    let query = Tour.find(queryObj)
-
-    // Sorting
-
-    if (req.query.sort) {
-      // mongoose uses field names(strings) for sorting
-      // you can use multiple field names separated by a space to sort a query.
-      // if there are ties in the sort order, mongoose will use the additional field names to further sort the query.
-      // minus sign before the field name indicates descending order
-      const sortBy = req.query.sort.split(',').join(' ')
-      query = query.sort(sortBy)
-    } else {
-      query = query.sort('-createdAt')
-    }
-
-    // Fields selecting
-
-    // if the fields parameter is specified, mongoose will only return the fields specified in the fields parameter.
-
-    if (req.query.fields) {
-      const fields = req.query.fields.split(',').join(' ')
-      query = query.select(fields)
-    } else {
-      // the minus sign tells mongoose to exclude the field
-      query = query.select('-__v')
-    }
-
-    // Pagination
-
-    const { page = 1, limit = 10 } = req.query
-    const skipped = (page - 1) * limit
-    query = query.skip(skipped).limit(parseInt(limit, 10))
-
-    if (req.query.page) {
-      const numTours = await Tour.countDocuments()
-      if (numTours <= skipped) throw new Error('This page does not exist')
-    }
+    // build the query
+    const features = new ApiFeatures(Tour.find(), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate()
 
     // Execute query
-
-    const tours = await query
+    const tours = await features.query
     res.status(200).json({
       status: 'success',
       results: tours.length,
