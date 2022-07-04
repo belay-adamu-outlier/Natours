@@ -3,10 +3,11 @@ const {
   getTop5BestTours,
   getAllTours,
   getTour,
-  getTourStats,
   createTour,
   updateTour,
-  deleteTour
+  deleteTour,
+  getTourStats,
+  getMonthlyPlan
 } = require('../controllers/tourControllers')
 
 const router = Router()
@@ -15,6 +16,7 @@ const router = Router()
 router.route('/').get(getAllTours).post(createTour)
 router.route('/top-5-best').get(getTop5BestTours, getAllTours)
 router.route('/tour-stats').get(getTourStats)
+router.route('/monthly-plan/:year').get(getMonthlyPlan)
 router.route('/:id').get(getTour).patch(updateTour).delete(deleteTour)
 
 module.exports = router
