@@ -25,5 +25,5 @@ mongoose
 
 app.listen(port, () => {
   // eslint-disable-next-line no-console
-  console.log(`listening on ${port}...`)
+  console.log(`listening on port ${port}...`)
 })
