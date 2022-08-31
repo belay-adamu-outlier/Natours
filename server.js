@@ -1,6 +1,12 @@
 const dotenv = require('dotenv')
 const mongoose = require('mongoose')
 
+process.on('uncaughtException', (err) => {
+  // eslint-disable-next-line no-console
+  console.error(err.name, err.message)
+  process.exit(1)
+})
+
 dotenv.config({ path: `${__dirname}/.env` })
 const app = require('./app')
 
@@ -23,7 +29,16 @@ mongoose
     console.log('Connection to DB successful!')
   })
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   // eslint-disable-next-line no-console
   console.log(`listening on port ${port}...`)
+})
+
+process.on('unhandledRejection', (err) => {
+  // eslint-disable-next-line no-console
+  console.error(err.name, err.message)
+
+  server.close(() => {
+    process.exit(1)
+  })
 })
