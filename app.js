@@ -23,9 +23,13 @@ app.use((req, res, next) => {
 app.use('/api/v1/tours', tourRouter)
 app.use('/api/v1/users', userRouter)
 
+// for all routes that are not defined above, send 404 error
+
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404))
 })
+
+// this handles all errors that are not handled above
 
 app.use(globalErrorHandler)
 
