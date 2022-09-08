@@ -6,8 +6,11 @@ const {
   updateUser,
   deleteUser
 } = require('../controllers/userControllers')
+const { signup } = require('../controllers/authController')
 
 const Route = Router()
+
+Route.post('/signup', signup)
 
 Route.route('/').get(getAllUsers).post(createUser)
 
